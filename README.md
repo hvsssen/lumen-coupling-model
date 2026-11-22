@@ -6,20 +6,17 @@ Modélisation de deux lumens reliés par un flux de soluté, sans pompe osmotiqu
 
 Chaque lumen est modélisé comme une lentille formée de deux segments circulaires symétriques de part et d'autre de la jonction cellule-cellule, d'où l'aire :
 
-```
-A(R) = R^2 * (2*theta - sin(2*theta))
-```
+$$A(R) = R^2 \left(2\theta - \sin(2\theta)\right)$$
 
-L'angle `theta` ne dépend que des tensions de surface (fixes), donc il reste constant au cours du temps. En dérivant cette relation et en l'injectant dans le bilan de flux, on obtient le système d'équations différentielles résolu dans `lumen_two_odes.py`, en R1 et R2 :
+L'angle $\theta$ ne dépend que des tensions de surface (fixes) :
 
-```
-dR1/dt = -J12 / (2*g1*R1)
-dR2/dt =  J12 / (2*g2*R2)
+$$\theta_i = \arccos\left(\frac{\gamma_C}{2\gamma_i}\right)$$
 
-J12 = C12 * (gamma1/R1 - gamma2/R2)
-```
+donc il reste constant au cours du temps. En dérivant la relation $A(R)$ et en l'injectant dans le bilan de flux $J_{12} = C_{12}\left(\frac{\gamma_1}{R_1} - \frac{\gamma_2}{R_2}\right)$, on obtient le système d'équations différentielles résolu dans `lumen_two_odes.py`, en $R_1$ et $R_2$ :
 
-où `C12` est la conductivité de la jonction entre les deux lumens, `gamma1`, `gamma2` les tensions de surface des lumens, et `g1`, `g2` les constantes géométriques issues de `theta1`, `theta2`.
+$$\frac{dR_1}{dt} = -\frac{J_{12}}{2 g_1 R_1}, \qquad \frac{dR_2}{dt} = \frac{J_{12}}{2 g_2 R_2}$$
+
+où $C_{12}$ est la conductivité de la jonction entre les deux lumens, $\gamma_1$, $\gamma_2$ les tensions de surface des lumens, et $g_1$, $g_2$ les constantes géométriques $g_i = 2\theta_i - \sin(2\theta_i)$ issues de $\theta_1$, $\theta_2$.
 
 Comme `dR1` et `dR2` viennent du même flux `J12` avec des signes opposés, l'aire totale `A1+A2` est conservée : pas de pompe osmotique, donc pas de création ni de destruction de matière, seulement un transfert entre les deux lumens. Le système est instable (type mûrissement d'Ostwald) : le lumen le plus "défavorisé" (rayon plus petit et/ou tension plus forte) se vide dans l'autre.
 
